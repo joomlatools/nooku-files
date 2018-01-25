@@ -61,12 +61,12 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
      */
     protected function _beforeRender(KControllerContextInterface $context)
     {
-        $view = $this->getView();
+        $config = $this->getView()->getConfig();
 
-        $view->getConfig()->append(array(
+        $config->append(array(
             'config' => array(
-                'can_attach' => $this->canAdd(),
-                'can_detach' => $this->canDelete()
+                'can_add'    => $this->canAdd(),
+                'can_delete' => $this->canDelete()
             )
         ));
 
