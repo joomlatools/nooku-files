@@ -129,8 +129,13 @@ class ComFilesModelAttachments extends KModelDatabase
     {
         $identifier = $this->getFilesModel()->getIdentifier();
 
-        foreach ($context->entity as $entity) {
+        foreach ($context->entity as $entity)
+        {
             $entity->files_model = $identifier;
+
+            if ($thumbnails = $this->getState()->thumbnails) {
+                $entity->getConfig()->append(array('thumbnails' => $thumbnails));
+            }
         }
     }
 
@@ -143,6 +148,12 @@ class ComFilesModelAttachments extends KModelDatabase
             'files_model' => $this->getFilesModel()->getIdentifier(),
         ));
 
-        return parent::_actionCreate($context);
+        $entity = parent::_actionCreate($context);
+
+        if ($thumbnails = $this->getState()->thumbnails) {
+            $entity->getConfig()->append(array('thumbnails' => $thumbnails));
+        }
+
+        return $entity;
     }
 }
