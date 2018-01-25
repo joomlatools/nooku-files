@@ -154,7 +154,7 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
     {
         $request = $context->getRequest();
 
-        if ($request->getFormat() == 'html')
+        if ($request->isSafe() && $request->getFormat() == 'html')
         {
             $attachment = $this->getModel()->fetch();
 
