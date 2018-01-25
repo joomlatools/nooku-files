@@ -31,15 +31,9 @@
                     <?php // this comment below must stay ?>
                     <div class="koowa_media"><!--
                     <? foreach ($attachments as $attachment): ?>
-                        <? if ($attachment->file): ?>
-                     --><div class="koowa_media__item">
-                            <div class="koowa_media__item__content file">
-                                <?= import("com:files.attachment.gallery.html", array('attachment' => $attachment)) ?>
-                            </div>
-                        </div><!--
-                        <? endif ?>
+                        <?= import("com:files.attachment.gallery.html", array('attachment' => $attachment)) ?>
                     <? endforeach ?>
-             --></div>
+                --></div>
                 </div>
             </div>
         </div>
