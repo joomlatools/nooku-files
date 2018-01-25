@@ -62,18 +62,18 @@
 
                     return String(string).replace(/[&<>"'\/]/g, function (s) {return entityMap[s]});
                 },
-                attach: function(attachment)
+                delete: function(attachment)
                 {
                     var context = {
                         data: {
                             csrf_token: this.csrf_token,
-                            _action: 'attach'
+                            _action: 'delete'
                         },
                         url: this.url,
                         attachment: attachment
                     };
 
-                    this.selector.trigger('before.attach', context);
+                    this.selector.trigger('before.delete', context);
 
                     $.ajax({
                         url: context.url,
@@ -82,31 +82,7 @@
                         success: function(data)
                         {
                             context.result = data;
-                            my.selector.trigger('after.attach', context);
-                        }
-                    });
-                },
-                detach: function(attachment)
-                {
-                    var context = {
-                        data: {
-                            csrf_token: this.csrf_token,
-                            _action: 'detach'
-                        },
-                        url: this.url,
-                        attachment: attachment
-                    };
-
-                    this.selector.trigger('before.detach', context);
-
-                    $.ajax({
-                        url: context.url,
-                        method: 'POST',
-                        data: context.data,
-                        success: function(data)
-                        {
-                            context.result = data;
-                            my.selector.trigger('after.detach', context);
+                            my.selector.trigger('after.delete', context);
                         }
                     });
                 },
