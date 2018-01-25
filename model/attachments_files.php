@@ -22,7 +22,8 @@ class ComFilesModelAttachments_files extends KModelDatabase
         $this->getState()
              ->insert('name', 'string', null, true, array('container', 'path'))
              ->insert('container', 'int', null, true, array('name', 'path'))
-             ->insert('path', 'string', null, true, array('name', 'container'));
+             ->insert('path', 'string', null, true, array('name', 'container'))
+             ->insert('thumbnails', 'raw', null, false, array(), true);
     }
 
     protected function _buildQueryColumns(KDatabaseQueryInterface $query)
