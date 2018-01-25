@@ -23,11 +23,16 @@ class ComFilesModelEntityAttachments_file extends KModelEntityRow
     {
         if (!$this->_file instanceof ComFilesModelEntityFile)
         {
-            $file = $this->getObject('com:files.model.files')
-                         ->container($this->container_slug)
-                         ->name($this->name)
-                         ->folder($this->path)
-                         ->fetch();
+            $model = $this->getObject('com:files.model.files');
+
+            if ($thumbnails = $this->getConfig()->thumbnails) {
+                $model->thumbnails($thumbnails);
+            }
+
+            $file = $model->container($this->container_slug)
+                  ->name($this->name)
+                  ->folder($this->path)
+                  ->fetch();
 
             if (!$file->isNew()) {
                 $this->_file = $file->getIterator()->current();;
