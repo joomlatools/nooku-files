@@ -40,6 +40,16 @@ class ComFilesModelAttachments_files extends KModelDatabase
         $query->join('files_containers AS containers', 'containers.files_container_id = tbl.files_container_id', 'INNER');
     }
 
+    protected function _afterFetch(KModelContext $context)
+    {
+        foreach ($context->entity as $entity)
+        {
+            if ($thumbnails = $this->getState()->thumbnails) {
+                $entity->getConfig()->append(array('thumbnails' => $thumbnails));
+            }
+        }
+    }
+
     /**
      * Overridden for pushing the container value.
      */
@@ -50,6 +60,12 @@ class ComFilesModelAttachments_files extends KModelDatabase
             'path'      => '.'
         ));
 
-        return parent::_actionCreate($context);
+        $entity = parent::_actionCreate($context);
+
+        if ($thumbnails = $this->getState()->thumbnails) {
+            $entity->getConfig()->append(array('thumbnails' => $thumbnails));
+        }
+
+        return $entity;
     }
 }
