@@ -15,6 +15,8 @@
  */
 class ComFilesModelEntityAttachment extends KModelEntityRow
 {
+    protected $_file = null;
+
     /**
      * Attachment file getter.
      *
@@ -22,18 +24,24 @@ class ComFilesModelEntityAttachment extends KModelEntityRow
      */
     public function getPropertyFile()
     {
-        $file = null;
-
-        if (!$this->isNew() && ($model = $this->files_model))
+        if (!$this->_file instanceof ComFilesModelEntityAttachments_file && !$this->isNew() && ($model = $this->files_model))
         {
             $model = $this->getObject($this->files_model);
 
+            if ($thumbnails = $this->getConfig()->thumbnails) {
+                $model->thumbnails($thumbnails);
+            }
+
             $key = $model->getTable()->getIdentityColumn();
 
-            $file = $model->id($this->{$key})->fetch()->getIterator()->current();
+            $file = $model->id($this->{$key})->fetch();
+
+            if (!$file->isNew()) {
+                $this->_file = $file->getIterator()->current();;
+            }
         }
 
-        return $file;
+        return $this->_file;
     }
 
     public function toArray()
@@ -50,5 +58,12 @@ class ComFilesModelEntityAttachment extends KModelEntityRow
         $data['attached_on_timestamp'] = strtotime($this->attached_on);
 
         return $data;
+    }
+
+    public function reset()
+    {
+        parent::reset();
+
+        $this->_file = null;
     }
 }
