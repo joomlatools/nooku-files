@@ -8,8 +8,8 @@
  */
 defined('KOOWA') or die;
 
-$can_attach       = isset(parameters()->config['can_attach']) ? parameters()->config['can_attach'] : true;
-$can_detach       = isset(parameters()->config['can_detach']) ? parameters()->config['can_detach'] : true;
+$can_add       = isset(parameters()->config['can_add']) ? parameters()->config['can_add'] : true;
+$can_delete       = isset(parameters()->config['can_delete']) ? parameters()->config['can_delete'] : true;
 $check_duplicates = $container->getParameters()->check_duplicates ? $container->getParameters()->check_duplicates : 'unique';
 
 $query = url()->getQuery(true);
@@ -74,8 +74,13 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
                     var attachment = object.object.name;
                     that.select(attachment);
 
-                    if (confirm(<?= json_encode(translate('You are about to remove this attachment. Would you like to proceed?')) ?>)) {
-                        that.detach(attachment);
+                    if (confirm(<?= json_encode(translate('You are about to remove this attachment. Would you like to proceed?')) ?>))
+                    {
+                        node = this.nodes.get(attachment);
+
+                        if (node) {
+                            Attachments.delete(attachment);
+                        }
                     }
                 });
             }.bind(app.grid));
@@ -88,7 +93,7 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
 
             Attachments = Attachments.getInstance(
                 {
-                    url: "<?= route('component=' . urlencode($component) . '&view=attachment&container=' . urlencode($container->slug), true, false) ?>",
+                    url: "<?= route('component=' . urlencode($component) . '&view=attachment', true, false) ?>",
                     selector: '#document_list',
                     csrf_token: <?= json_encode(object('user')->getSession()->getToken()) ?>
                 }
@@ -98,12 +103,18 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
             {
                 var response = data.result.response;
 
-                if (typeof response.entities !== 'undefined') {
-                    app.grid.attach(data.file.name);
+                if (typeof response.entities !== 'undefined')
+                {
+                    var entity = response.entities.pop();
+
+                    this.insertRows(response.entities);
+                    this.fireEvent('afterAddAttachment', {attachment: {name: entity.attachment.name, entity: entity}});
+
+                    this.attach(data.file.name);
                 }
             }).on('uploader:create', function() {
                 $(this).addClass('k-upload--boxed-top');
-            });
+            }).bind(app.grid)
 
             // Attach action implementation
             app.grid.attach = function (attachment)
@@ -112,73 +123,17 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
                 Attachments.attach(attachment);
             }.bind(app.grid);
 
-            // After attach logic.
-            Attachments.bind('after.attach', function (event, context)
-            {
-                var url = "<?= route('component=' . urlencode($component) . '&view=attachments&container=' . urlencode($container->slug) . '&format=json&name={name}&table={table}&row={row}', true, false) ?>";
-
-                url = Attachments.replace(url, {
-                    name: context.attachment,
-                    table: <?= json_encode($table) ?>,
-                    row: <?= json_encode($row) ?>
-                });
-
-                var that = this;
-
-                $.ajax({
-                    url: url,
-                    method: 'get',
-                    success: function (data) {
-                        that.insertRows(data.entities);
-                        that.fireEvent('afterAttachAttachment', {attachment: {name: context.attachment, entity: data.entities.pop()}});
-                    },
-                    error: function() {
-                        that.fireEvent('afterAttachAttachment', {attachment: {name: context.attachment}});
-                    }
-                });
-            }.bind(app.grid));
-
-            var setContext = function (context) {
-                context.url += (context.url.search(/\?/) ? '&' : '?');
-                context.url += 'name=' + Attachments.escape(context.attachment);
-
-                context.data.table = <?= json_encode($table) ?>;
-                context.data.row = <?= json_encode($row) ?>;
-            };
-
-            Attachments.bind('before.attach', function (event, context) {
-                setContext(context)
-            });
-
-            // Detach grid implementation.
-            app.grid.detach = function (attachment)
-            {
-                node = this.nodes.get(attachment);
-
-                if (node) {
-                    this.fireEvent('beforeDetachAttachment', {node: node});
-
-                    Attachments.detach(attachment);
-                }
-            }.bind(app.grid);
-
-            Attachments.bind('before.detach', function (event, context) {
-                setContext(context)
-            });
-
-            Attachments.bind('after.detach', function (event, context)
+            Attachments.bind('after.delete', function (event, context)
             {
                 this.erase(context.attachment);
 
                 $('#files-preview').empty();
-
-                this.fireEvent('afterDetachAttachment', {node: node});
             }.bind(app.grid));
         });
     </script>
 
     <?= import('com:files.files.templates_compact.html');?>
-    <?= import('com:files.attachments.templates_manage.html', array('can_detach' => $can_detach));?>
+    <?= import('com:files.attachments.templates_manage.html', array('can_delete' => $can_delete));?>
 </div>
 
 <!-- Wrapper -->
@@ -202,16 +157,21 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
                 <div class="k-component k-js-component">
 
                     <!-- Uploader -->
-                    <? if ($can_attach): ?>
+                    <? if ($can_add): ?>
                         <div class="attachments-upload">
                             <?= helper('uploader.container', array(
                                 'container' => $container->slug,
-                                'element' => '.attachments-uploader',
+                                'element'   => '.attachments-uploader',
                                 'options'   => array(
-                                    'multi_selection' => true,
-                                    'duplicate_mode' => $check_duplicates,
-                                    'url' => route('component=' . urlencode($component) . '&view=file&plupload=1&routed=1&format=json&container=' .
-                                                   (isset($container) ? $container->slug : ''), false, false)
+                                    'multi_selection'  => true,
+                                    'duplicate_mode'   => $check_duplicates,
+                                    'url'              => route('component=' . urlencode($component) .
+                                                                '&view=file&plupload=1&routed=1&format=json&container=' .
+                                                                (isset($container) ? $container->slug : ''), false, false),
+                                    'multipart_params' => array(
+                                        'table' => $table,
+                                        'row'   => $row
+                                    )
                                 )
                             )) ?>
                         </div>
