@@ -36,6 +36,7 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
         {
             var config = <?= json_encode(KObjectConfig::unbox(parameters()->config)); ?>,
                 options = {
+
                     cookie: {path: '<?=object('request')->getSiteUrl()?>'},
                     callback: <?= json_encode(isset($callback) ? $callback : '') ?>,
                     url:  "<?= route('component='. urlencode($component) .'&view=attachments&format=json&table=' . $table . '&row=' . $row, true, false) ?>",
