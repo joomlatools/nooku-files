@@ -17,15 +17,13 @@ class ComFilesViewAttachmentsHtml extends ComKoowaViewHtml
 {
     protected function _initialize(KObjectConfig $config)
     {
-        $config->append(array('auto_fetch' => false));
+        $config->append(array('auto_fetch' => false, 'container' => 'attachments'));
         parent::_initialize($config);
     }
 
     protected function _fetchData(KViewContext $context)
     {
-        $state = $this->getModel()->getState();
-
-        $container = $this->getObject('com:files.model.containers')->id($state->container)->fetch();
+        $container = $this->getObject('com:files.model.containers')->slug($this->getConfig()->container)->fetch();
 
         $context->data->sitebase  = trim(JURI::root(), '/');
         $context->data->token     = $this->getObject('user')->getSession()->getToken();
