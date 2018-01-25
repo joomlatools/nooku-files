@@ -69,6 +69,10 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
                 'can_detach' => $this->canDelete()
             )
         ));
+
+        if ($container = $this->getRequest()->getQuery()->container) {
+            $config->container = $container;
+        }
     }
 
     /**
