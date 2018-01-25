@@ -23,7 +23,8 @@ class ComFilesModelAttachments extends KModelDatabase
 
         $this->getState()->insert('file', 'int')
              ->insert('path', 'string')
-             ->insert('name', 'string');
+             ->insert('name', 'string')
+             ->insert('thumbnails', 'raw', null, false, array(), true);
 
         $this->_files_model = $config->files_model;
     }
