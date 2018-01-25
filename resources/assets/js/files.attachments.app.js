@@ -66,6 +66,10 @@ Files.Attachments.App = new Class({
         {
             var url = this.url;
 
+            if (this.container.parameters.thumbnails === true && this.options.thumbnails) {
+                url += '&thumbnails=' + this.options.thumbnails;
+            }
+
             url += '&_' + Date.now();
 
             that.grid.reset(); // Flush current content.
