@@ -12,7 +12,7 @@ CREATE TABLE `attachments_files` (
   `locked_by` bigint(20) NOT NULL,
   `locked_on` datetime NOT NULL,
   PRIMARY KEY (`attachments_file_id`),
-  UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `attachments` (
