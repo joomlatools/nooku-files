@@ -94,6 +94,11 @@ class ComFilesControllerBehaviorAttachment extends KControllerBehaviorAbstract
             } else $identifier = $this->_controller;
 
             $this->_controller = $this->getObject($identifier);
+
+            // Forward thumbnails state to the attachment controller
+            if ($thumbnails = $this->getMixer()->getRequest()->getQuery()->thumbnails) {
+                $this->_controller->getRequest()->getQuery()->thumbnails = $thumbnails;
+            }
         }
 
         return $this->_controller;
