@@ -27,7 +27,7 @@ defined('KOOWA') or die; ?>
         <tbody class="template-item">
             <tr class="files-node files-attachment">
                 <td>
-                    <? if ($can_detach): ?>
+                    <? if ($can_delete): ?>
                         <span type="button" class="detach_button k-button k-button--default k-button--small k-link-ontop" tabindex="0">x</span>
                     <? endif ?>
                     <a class="navigate k-link-coverall" href="#" title="[%= name %]">
