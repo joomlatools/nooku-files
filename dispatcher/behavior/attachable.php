@@ -62,14 +62,6 @@ class ComFilesDispatcherBehaviorAttachable extends KBehaviorAbstract
             $this->send($context);
             $result = false;
         }
-        elseif (in_array($query->view, array('attachment', 'attachments')))
-        {
-            $container = $this->getObject('com:files.model.containers')->slug($this->_container)->fetch();
-
-            if (!$container->isNew()) {
-                $context->getRequest()->getQuery()->container = $container->id;
-            }
-        }
 
         return $result;
     }
@@ -136,7 +128,7 @@ class ComFilesDispatcherBehaviorAttachable extends KBehaviorAbstract
              ->getConfig()
              ->append(array('behaviors' => array($behavior => array('controller' => $controller), 'permissible' => array('permission' => $permission))));
 
-        $context->getRequest()->getQuery()->container = $this->_container;
+        //$context->getRequest()->getQuery()->container = $this->_container;
         $context->param = 'com:files.dispatcher.http';
 
         $this->forward($context);
