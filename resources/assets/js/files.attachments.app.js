@@ -185,8 +185,10 @@ Files.Attachment = new Class({
     initialize: function(object, options) {
         this.parent(object, options);
 
-        this.size = new Files.Filesize(this.file.metadata.size);
-        this.filetype = Files.getFileType(this.file.metadata.extension);
+        var file = this.file.storage;
+
+        this.size = new Files.Filesize(file.metadata.size);
+        this.filetype = Files.getFileType(file.metadata.extension);
     },
     delete: function(success, failure) {
         // Do nothing, just call the success event handler.
