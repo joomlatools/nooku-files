@@ -13,7 +13,7 @@
  * @author  Arunas Mazeika <https://github.com/amazeika>
  * @package Koowa\Component\Files
  */
-class ComFilesDispatcherBehaviorAttachable extends KBehaviorAbstract
+class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
 {
     /**
      * The attachments container slug.
