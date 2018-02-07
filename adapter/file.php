@@ -147,6 +147,12 @@ class ComFilesAdapterFile extends ComFilesAdapterAbstract
 	{
 		$result = false;
 
+        $path = $this->getObject('com:files.adapter.folder', array('path' => dirname($this->_path)));
+
+        if (!$path->exists()) {
+            $path->create();
+        }
+
 		if (is_writable(dirname($this->_path)))
 		{
 			if (is_uploaded_file($data)) {
