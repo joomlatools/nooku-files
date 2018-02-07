@@ -136,30 +136,6 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
         }
     }
 
-    /**
-     * Overriden for auto-aliasing views when the controller is extended.
-     */
-    public function setView($view)
-    {
-        $view = parent::setView($view);
-
-        if ($view instanceof KObjectIdentifierInterface && $view->getPackage() !== 'files')
-        {
-            $manager = $this->getObject('manager');
-
-            if (!$manager->getClass($view, false))
-            {
-                $identifier = $view->toArray();
-                $identifier['package'] = 'files';
-                unset($identifier['domain']);
-
-                $manager->registerAlias($identifier, $view);
-            }
-        }
-
-        return $view;
-    }
-
     protected function _serveFile(KControllerContextInterface $context)
     {
         $request = $context->getRequest();
