@@ -50,20 +50,29 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
      */
     protected function _beforeDispatch(KDispatcherContextInterface $context)
     {
-        $result = true;
-
-        $this->_setAliases();
-
         $query = $context->getRequest()->getQuery();
 
-        if ($query->routed && in_array($query->view, array('file', 'files', 'node', 'nodes')))
+        if (in_array($query->view, array('attachment', 'attachments')))
         {
-            $this->_forward($context);
-            $this->send($context);
-            $result = false;
-        }
+            $this->_setAliases();
 
-        return $result;
+            if (!$query->container) {
+                $query->container = $this->_container;
+            }
+
+            if ($query->plupload)
+            {
+                $result = $this->_upload($context);
+
+                if (($attachment = $result->attachment) && !$attachment->isNew())
+                {
+                    $this->getResponse()->setContent($this->setController('attachment')
+                                                          ->getController()
+                                                          ->id($attachment->id)
+                                                          ->render())->send();
+                }
+            }
+        }
     }
 
     /**
@@ -105,7 +114,7 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
      *
      * @param KDispatcherContextInterface $context The context object.
      */
-    protected function _forward(KDispatcherContextInterface $context)
+    protected function _upload(KDispatcherContextInterface $context)
     {
         $mixer = $this->getMixer();
 
@@ -128,9 +137,21 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
              ->getConfig()
              ->append(array('behaviors' => array($behavior => array('controller' => $controller), 'permissible' => array('permission' => $permission))));
 
-        //$context->getRequest()->getQuery()->container = $this->_container;
-        $context->param = 'com:files.dispatcher.http';
+        $query = clone $context->getRequest()->getQuery();
 
-        $this->forward($context);
+        $query->view = 'file';
+
+        $context->append(array(
+            'params' => array(
+                'query'      => $query,
+                'dispatcher' => 'com:files.dispatcher.http',
+            )
+        ));
+
+        $result = $this->include($context);
+
+        unset($context->params);
+
+        return $result;
     }
 }
