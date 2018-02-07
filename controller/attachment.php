@@ -34,6 +34,14 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
                 'com:files.model.attachments_files' => array(
                     'path' => array('model'),
                     'name' => 'attachments_files'
+                ),
+                'com:files.template.helper.icon' => array(
+                    'path' => array('template', 'helper'),
+                    'name' => 'icon'
+                ),
+                'com:files.template.helper.uploader' => array(
+                    'path' => array('template', 'helper'),
+                    'name' => 'uploader'
                 )
             );
 
