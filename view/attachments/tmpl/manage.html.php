@@ -28,7 +28,7 @@ defined('KOOWA') or die;
 
                     cookie: {path: '<?=object('request')->getSiteUrl()?>'},
                     callback: <?= json_encode(isset($callback) ? $callback : '') ?>,
-                    url:  "<?= route('component='. urlencode($component) .'&view=attachments&format=json&table=' . $table . '&row=' . $row, true, false) ?>",
+                    url:  "<?= route('view=attachments&format=json&table=' . $table . '&row=' . $row, true, false) ?>",
                     root_text: <?= json_encode(translate('Root folder')) ?>,
                     editor: <?= json_encode(parameters()->editor); ?>,
                     types: <?= json_encode(KObjectConfig::unbox(parameters()->types)); ?>,
@@ -60,12 +60,13 @@ defined('KOOWA') or die;
 
                 $(object.object.element).find('span').click(function()
                 {
-                    var attachment = object.object.name;
-                    that.select(attachment);
+                    var attachment = object.object;
+
+                    that.select(attachment.name);
 
                     if (confirm(<?= json_encode(translate('You are about to remove this attachment. Would you like to proceed?')) ?>))
                     {
-                        node = this.nodes.get(attachment);
+                        var node = that.nodes.get(attachment.name);
 
                         if (node) {
                             Attachments.delete(attachment);
@@ -82,7 +83,7 @@ defined('KOOWA') or die;
 
             Attachments = Attachments.getInstance(
                 {
-                    url: "<?= route('component=' . urlencode($component) . '&view=attachment', true, false) ?>",
+                    url: "<?= route('view=attachment', true, false) ?>",
                     selector: '#document_list',
                     csrf_token: <?= json_encode(object('user')->getSession()->getToken()) ?>
                 }
@@ -94,30 +95,24 @@ defined('KOOWA') or die;
 
                 if (typeof response.entities !== 'undefined')
                 {
-                    var entity = response.entities.pop();
-
-                    this.insertRows(response.entities);
-                    this.fireEvent('afterAddAttachment', {attachment: {name: entity.attachment.name, entity: entity}});
-
-                    this.attach(data.file.name);
+                    $.each(response.entities, function(idx, attachment) {
+                        app.grid.insertRows(attachment);
+                    });
                 }
             }).on('uploader:create', function() {
                 $(this).addClass('k-upload--boxed-top');
-            }).bind(app.grid)
-
-            // Attach action implementation
-            app.grid.attach = function (attachment)
-            {
-                this.fireEvent('beforeAttachAttachment', {attachment: attachment});
-                Attachments.attach(attachment);
-            }.bind(app.grid);
+            });
 
             Attachments.bind('after.delete', function (event, context)
             {
                 this.erase(context.attachment);
-
                 $('#files-preview').empty();
             }.bind(app.grid));
+
+            Attachments.bind('before.delete', function (event, context)
+            {
+                context.url += '&id=' + context.attachment.id;
+            });
         });
     </script>
 
