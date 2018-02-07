@@ -42,10 +42,10 @@ defined('KOOWA') or die; ?>
 <textarea style="display: none" id="attachments_details_attachment">
     [%
     var width = 0, height = 0, ratio = 0,
-        is_image = (file.type == 'image');
-    if (is_image && file.metadata.image) {
-        width  = file.metadata.image.width;
-        height = file.metadata.image.height;
+        is_image = (file.storage.type == 'image');
+    if (is_image && file.storage.metadata.image) {
+        width  = file.storage.metadata.image.width;
+        height = file.storage.metadata.image.height;
         ratio  = 150 / (width > height ? width : height);
     }
     %]
@@ -53,7 +53,7 @@ defined('KOOWA') or die; ?>
         <div class="k-card k-card--center">
             <div class="k-card__body">
                 [% if (is_image) { %]
-                [% if (file.thumbnail) { %]
+                [% if (file.storage.thumbnail) { %]
                 <div class="k-card__section k-card__section--small-spacing">
                     <div class="k-ratio-block k-ratio-block--4-to-3">
                         <div class="k-loader"></div>
