@@ -4678,8 +4678,12 @@ Files.Attachments.App = new Class({
 
                 copy.render('attachments').inject(that.preview);
 
-                if (copy.file.thumbnail) {
-                    that.preview.getElement('img').set('src', Files.sitebase + '/' + copy.file.thumbnail.relative_path).show();
+                var file = row.file.storage;
+
+                if (file.thumbnail) {
+                    that.preview.getElement('img').set('src', file.thumbnail.uri).show();
+                } else if (file.type == 'image' && file.uri) {
+                    that.preview.getElement('img').set('src', file.uri).show();
                 }
 
                 that.grid.selected = row.name;
@@ -4687,7 +4691,6 @@ Files.Attachments.App = new Class({
         });
 
         this.grid = new Files.Attachments.Grid(this.options.grid.element, opts);
-
     }
 });
 
@@ -4717,6 +4720,10 @@ Files.Attachments.Grid = new Class({
      * Insert multiple rows, possibly coming from a JSON request
      */
     insertRows: function(rows) {
+        if (rows.constructor !== Array) {
+            rows = [rows];
+        }
+
         this.fireEvent('beforeInsertRows', {rows: rows});
 
         Object.each(rows, function(row) {
@@ -4752,6 +4759,8 @@ Files.Attachment = new Class({
     template: 'attachment',
     initialize: function(object, options) {
         this.parent(object, options);
+
+        this.path = object.name; // Use attachment name as path (the grid shows attachments from one folder only)
 
         var file = this.file.storage;
 
