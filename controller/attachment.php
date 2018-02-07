@@ -71,11 +71,9 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
     {
         $config = $this->getView()->getConfig();
 
-        $config->append(array(
-            'config' => array(
-                'can_add'    => $this->canAdd(),
-                'can_delete' => $this->canDelete()
-            )
+        $config->merge(array(
+            'can_add'    => $this->canAdd(),
+            'can_delete' => $this->canDelete()
         ));
 
         if ($container = $this->getRequest()->getQuery()->container) {
