@@ -19,6 +19,13 @@ class ComFilesModelEntityAttachments_file extends KModelEntityRow
 
     protected $_container;
 
+    protected function _initialize(KObjectConfig $config)
+    {
+        $config->append(array('thumbnails' => false));
+
+        parent::_initialize($config);
+    }
+
     public function getPropertyStorage()
     {
         if (!$this->_file instanceof ComFilesModelEntityFile)
