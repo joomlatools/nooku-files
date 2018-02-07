@@ -17,6 +17,13 @@ class ComFilesModelEntityAttachment extends KModelEntityRow
 {
     protected $_file = null;
 
+    protected function _initialize(KObjectConfig $config)
+    {
+        $config->append(array('thumbnails' => false, 'files_model' => 'com:files.model.attachments_files'));
+
+        parent::_initialize($config);
+    }
+
     /**
      * Attachment file getter.
      *
@@ -24,20 +31,21 @@ class ComFilesModelEntityAttachment extends KModelEntityRow
      */
     public function getPropertyFile()
     {
-        if (!$this->_file instanceof ComFilesModelEntityAttachments_file && !$this->isNew() && ($model = $this->files_model))
+        if (!$this->_file instanceof ComFilesModelEntityAttachments_file && !$this->isNew())
         {
-            $model = $this->getObject($this->files_model);
+            $config = $this->getConfig();
 
-            if ($thumbnails = $this->getConfig()->thumbnails) {
-                $model->thumbnails($thumbnails);
-            }
+            $model = $this->getObject($config->files_model);
 
             $key = $model->getTable()->getIdentityColumn();
 
             $file = $model->id($this->{$key})->fetch();
 
-            if (!$file->isNew()) {
+            if (!$file->isNew())
+            {
                 $this->_file = $file->getIterator()->current();;
+
+                $this->_file->getConfig()->thumbnails = $config->thumbnails;
             }
         }
 
