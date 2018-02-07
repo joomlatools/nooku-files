@@ -152,6 +152,10 @@ Files.Attachments.Grid = new Class({
      * Insert multiple rows, possibly coming from a JSON request
      */
     insertRows: function(rows) {
+        if (rows.constructor !== Array) {
+            rows = [rows];
+        }
+
         this.fireEvent('beforeInsertRows', {rows: rows});
 
         Object.each(rows, function(row) {
