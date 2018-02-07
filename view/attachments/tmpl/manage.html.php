@@ -7,17 +7,6 @@
  * @link		http://github.com/joomlatools/joomlatools-framework-files for the canonical source repository
  */
 defined('KOOWA') or die;
-
-$can_add       = isset(parameters()->config['can_add']) ? parameters()->config['can_add'] : true;
-$can_delete       = isset(parameters()->config['can_delete']) ? parameters()->config['can_delete'] : true;
-$check_duplicates = $container->getParameters()->check_duplicates ? $container->getParameters()->check_duplicates : 'unique';
-
-$query = url()->getQuery(true);
-
-$table     = $query['table'];
-$row       = $query['row'];
-$component = isset($component) ? $component : substr($query['option'], 4);
-$callback  = isset($query['callback']) ? $query['callback'] : null;
 ?>
 
 <?= helper('ui.load', array('wrapper_class' => array('com_files--attachments'))); ?>
