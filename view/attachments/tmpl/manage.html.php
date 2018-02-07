@@ -155,6 +155,7 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
 
                 <!-- Component -->
                 <div class="k-component k-js-component">
+                <div class="k-component k-js-component">
 
                     <!-- Uploader -->
                     <? if ($can_add): ?>
@@ -165,12 +166,11 @@ $callback  = isset($query['callback']) ? $query['callback'] : null;
                                 'options'   => array(
                                     'multi_selection'  => true,
                                     'duplicate_mode'   => $check_duplicates,
-                                    'url'              => route('component=' . urlencode($component) .
-                                                                '&view=file&plupload=1&routed=1&format=json&container=' .
-                                                                (isset($container) ? $container->slug : ''), false, false),
+                                    'url'              => $uploader_url,
                                     'multipart_params' => array(
-                                        'table' => $table,
-                                        'row'   => $row
+                                        'table'  => $table,
+                                        'row'    => $row,
+                                        'folder' => $folder
                                     )
                                 )
                             )) ?>
