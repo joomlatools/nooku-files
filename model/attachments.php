@@ -135,10 +135,12 @@ class ComFilesModelAttachments extends KModelDatabase
 
         foreach ($context->entity as $entity)
         {
-            $entity->files_model = $identifier;
+            $config = $entity->getConfig();
+
+            $config->files_model = $identifier;
 
             if ($thumbnails = $this->getState()->thumbnails) {
-                $entity->getConfig()->append(array('thumbnails' => $thumbnails));
+                $config->thumbnails = $thumbnails;
             }
         }
     }
