@@ -31,7 +31,11 @@ class ComFilesModelAttachments extends KModelDatabase
 
     protected function _initialize(KObjectConfig $config)
     {
-        $config->append(array('files_model' => 'attachments_files'));
+        $parts = $config->object_identifier->toArray();
+
+        $parts['name'] = 'attachments_files';
+
+        $config->append(array('files_model' => $this->getIdentifier($parts)->toString()));
 
         parent::_initialize($config);
     }
