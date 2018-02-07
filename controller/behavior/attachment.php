@@ -96,13 +96,12 @@ class ComFilesControllerBehaviorAttachment extends KControllerBehaviorAbstract
     {
         if (!$this->_controller instanceof KControllerInterface)
         {
-            $mixer = $this->getMixer();
-
             if (!$this->_controller instanceof KObjectIdentifierInterface)
             {
                 if (strpos($this->_controller, '.') === false)
                 {
-                    $parts         = $mixer->getIdentifier()->toArray();
+                    $parts         = $this->getIdentifier()->toArray();
+                    $parts['path'] = array('controller');
                     $parts['name'] = $this->_controller;
 
                     $identifier = $this->getIdentifier($parts);
