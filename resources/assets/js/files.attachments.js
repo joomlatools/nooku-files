@@ -16,6 +16,11 @@
                 {
                     my.template = config.template ? $(config.template) : null;
                     my.selector = $(config.selector);
+
+                    if (!config.url.search('/\?/')) {
+                        config.url += '?';
+                    }
+
                     my.url = config.url;
                     my.csrf_token = config.csrf_token;
 
