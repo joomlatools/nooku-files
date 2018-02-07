@@ -110,8 +110,12 @@ Files.Attachments.App = new Class({
 
                 copy.render('attachments').inject(that.preview);
 
-                if (copy.file.thumbnail) {
-                    that.preview.getElement('img').set('src', Files.sitebase + '/' + copy.file.thumbnail.relative_path).show();
+                var file = row.file.storage;
+
+                if (file.thumbnail) {
+                    that.preview.getElement('img').set('src', file.thumbnail.uri).show();
+                } else if (file.type == 'image' && file.uri) {
+                    that.preview.getElement('img').set('src', file.uri).show();
                 }
 
                 that.grid.selected = row.name;
@@ -119,7 +123,6 @@ Files.Attachments.App = new Class({
         });
 
         this.grid = new Files.Attachments.Grid(this.options.grid.element, opts);
-
     }
 });
 
