@@ -192,6 +192,8 @@ Files.Attachment = new Class({
     initialize: function(object, options) {
         this.parent(object, options);
 
+        this.path = object.name; // Use attachment name as path (the grid shows attachments from one folder only)
+
         var file = this.file.storage;
 
         this.size = new Files.Filesize(file.metadata.size);
