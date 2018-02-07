@@ -67,7 +67,23 @@ class ComFilesControllerBehaviorAttachment extends KControllerBehaviorAbstract
             }
             else $file = $file->getIterator()->current();
 
-            $context->file = $file;
+            $data = $context->getRequest()->getData();
+
+            // See if we should create the attachment
+            if ($data->table && $data->row)
+            {
+                $controller = $this->_getController();
+
+                $attachment_context = $controller->getContext();
+                $attachment_context->file = $file;
+
+                $attachment_context->getRequest()->setData(array(
+                    'table' => 'content',
+                    'row'   => $data->row,
+                ));
+
+                $entity->attachment = $controller->add($attachment_context);
+            }
         }
     }
 
