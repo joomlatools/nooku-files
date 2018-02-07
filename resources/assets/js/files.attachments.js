@@ -75,19 +75,28 @@
                             _action: 'delete'
                         },
                         url: this.url,
-                        attachment: attachment
+                        attachment: attachment,
+                        method: 'POST',
+                        action: 'delete'
                     };
 
                     this.selector.trigger('before.delete', context);
 
+                    this.ajax(context);
+                },
+                ajax: function(context) {
+                    if (context.url.search(/\?/) == (context.url.len - 1)) {
+                        context.url = context.url.substr(0, context.url.len - 1); // Remove trailing ?s if any
+                    }
+
                     $.ajax({
                         url: context.url,
-                        method: 'POST',
+                        method: context.method,
                         data: context.data,
                         success: function(data)
                         {
                             context.result = data;
-                            my.selector.trigger('after.delete', context);
+                            my.selector.trigger('after.' + context.action, context);
                         }
                     });
                 },
