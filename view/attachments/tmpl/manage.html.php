@@ -139,7 +139,6 @@ defined('KOOWA') or die;
 
                 <!-- Component -->
                 <div class="k-component k-js-component">
-                <div class="k-component k-js-component">
 
                     <!-- Uploader -->
                     <? if ($can_add): ?>
