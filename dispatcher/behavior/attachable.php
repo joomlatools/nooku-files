@@ -142,7 +142,7 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
         $query->view = 'file';
 
         $context->append(array(
-            'params' => array(
+            'param' => array(
                 'query'      => $query,
                 'dispatcher' => 'com:files.dispatcher.http',
             )
@@ -150,7 +150,7 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
 
         $result = $this->include($context);
 
-        unset($context->params);
+        unset($context->param);
 
         return $result;
     }
