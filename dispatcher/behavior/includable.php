@@ -17,7 +17,7 @@ class ComFilesDispatcherBehaviorIncludable extends KControllerBehaviorAbstract
 {
     protected function _beforeInclude(KDispatcherContextInterface $context)
     {
-        $context->append(array('params' => array('dispatcher' => $this->getMixer()->getIdentifier())));
+        $context->append(array('param' => array('dispatcher' => $this->getMixer()->getIdentifier())));
     }
 
     /**
@@ -30,9 +30,13 @@ class ComFilesDispatcherBehaviorIncludable extends KControllerBehaviorAbstract
      */
     protected function _actionInclude(KDispatcherContextInterface $context)
     {
-        $params = $context->params;
+        $param = $context->param;
 
-        $identifier = $params->dispatcher;
+        if (is_string($param) || $param instanceof KObjectIdentifierInterface) {
+            $param = new KObjectConfig(array('dispatcher' => $param));
+        }
+
+        $identifier = $param->dispatcher;
 
         //Get the dispatcher identifier
         if(is_string($identifier) && strpos($identifier, '.') === false )
@@ -50,7 +54,7 @@ class ComFilesDispatcherBehaviorIncludable extends KControllerBehaviorAbstract
 
         $dispatcher = $this->getObject($identifier, $config);
 
-        if ($query = $params->query)
+        if ($query = $param->query)
         {
             if ($query instanceof KHttpMessageParameters) {
                 $query = $query->toArray();
