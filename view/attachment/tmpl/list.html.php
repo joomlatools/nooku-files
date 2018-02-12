@@ -9,7 +9,6 @@
 ?>
 
 <? $url = isset($url) ?: $attachment->url ?>
-<? $size = isset($size) ?: null ?>
 
 <? if ($file = $attachment->file): ?>
     <span class="koowa_header">
