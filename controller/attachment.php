@@ -117,21 +117,30 @@ class ComFilesControllerAttachment extends ComKoowaControllerModel
 
     protected function _beforeDelete(KControllerContextInterface $context)
     {
-        $context->file = $this->getModel()->fetch()->file;
+        $attachments = $this->getModel()->fetch();
+
+        $files = array();
+
+        foreach ($attachments as $attachment) {
+            $files[] = $attachment->file;
+        }
+
+        $context->files = $files;
     }
 
     protected function _afterDelete(KControllerContextInterface $context)
     {
         $model = $this->getModel();
 
-        $model->getState()->reset();
-
-        $file = $context->file;
-
-        if (!$model->file($file->id)->count())
+        foreach ($context->files as $file)
         {
-            if (!$file->delete()) {
-                throw new RuntimeException(('Attachment file could not be deleted'));
+            $model->getState()->reset();
+
+            if (!$model->file($file->id)->count())
+            {
+                if (!$file->delete()) {
+                    throw new RuntimeException(('Attachment file could not be deleted'));
+                }
             }
         }
     }
