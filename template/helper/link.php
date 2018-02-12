@@ -61,6 +61,10 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
             )
         ));
 
+        if ($config->token) {
+            $config->url = $this->_token($config->url, $config->token);
+        }
+
         $html = $this->getTemplate()->createHelper('behavior')->plyr($config);
 
         $attributes = $this->_prepareAttributes($config->attributes);
@@ -86,6 +90,10 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
             'url'        => sprintf('files://%s/%s', $file->container, $file->path),
             'attributes' => array()
         ));
+
+        if ($config->token) {
+            $config->url = $this->_token($$config->url, $config->token);
+        }
 
         $html = '';
 
@@ -146,6 +154,10 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
             'text'      => $file->name
         ));
 
+        if ($config->token) {
+            $config->url = $this->_token($config->url, $config->token);
+        }
+
         $attributes = $this->_prepareAttributes($config->attributes);
 
         return $this->_render($config->layout, array(
@@ -168,25 +180,38 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         return $result;
     }
 
+    protected function _token($url, $config = array())
+    {
+        $config = new KObjectConfig(array('name' => 'exp_token'));
+
+        $stringify = false;
+
+        if (!$url instanceof KHttpUrlInterface)
+        {
+            $url       = $this->getObject('lib:http.url', array('url' => $url));
+            $stringify = true; // Original URL is a string, we should return a string
+        }
+
+        $url->setQuery(array($config->name, $this->token($config)));
+
+        return $stringify ? $url->toString() : $url;
+    }
+
     public function token($config = array())
     {
         $config = new KObjectConfig($config);
 
-        $config->append(array('name' => 'exp_token', 'expire' => '+24 hours', 'secret' => ''));
-
-        if (!$config->url) throw new InvalidArgumentException('URL missing in configuration object');
+        $config->append(array('expire' => '+24 hours', 'secret' => ''));
 
         $token = $this->getObject('lib:http.token');
 
-        $date = $this->getObject('date');
+        $timezone = new DateTimeZone('UTC');
+
+        $date = new DateTime('now', $timezone);
 
         $token->setExpireTime($date->modify($config->expire));
 
-        $url = $this->getObject('lib:http.url', array('url' => $config->url));
-
-        $url->setQuery(array($config->name, $token->sign($config->secret)));
-
-        return $url->toString();
+        return $token->sign($config->secret);
     }
 
     protected function _render($layout, $config = array())
