@@ -31,7 +31,7 @@
                     <?php // this comment below must stay ?>
                     <div class="koowa_media"><!--
                     <? foreach ($attachments as $attachment): ?>
-                        <?= import("com:files.attachment.gallery.html", array('attachment' => $attachment)) ?>
+                    --><?= import("com:files.attachment.gallery.html", array('attachment' => $attachment)) ?><!--
                     <? endforeach ?>
                 --></div>
                 </div>
