@@ -24,6 +24,7 @@ class ComFilesModelAttachments extends KModelDatabase
         $this->getState()->insert('file', 'int')
              ->insert('path', 'string')
              ->insert('name', 'string')
+             ->insert('container', 'com:files.filter.container', null)
              ->insert('thumbnails', 'raw', null, false, array(), true);
 
         $this->_files_model = $config->files_model;
@@ -35,7 +36,9 @@ class ComFilesModelAttachments extends KModelDatabase
 
         $parts['name'] = 'attachments_files';
 
-        $config->append(array('files_model' => $this->getIdentifier($parts)->toString()));
+        $config->append(array(
+            'files_model'      => $this->getIdentifier($parts)->toString()
+        ));
 
         parent::_initialize($config);
     }
@@ -48,6 +51,10 @@ class ComFilesModelAttachments extends KModelDatabase
 
         if (!$state->isUnique())
         {
+            if ($container = $state->container) {
+                $query->where('containers.slug = :slug')->bind(array('slug' => $container));
+            }
+
             if ($table = $state->table) {
                 $query->where('tbl.table = :table')->bind(array('table' => $table));
             }
@@ -85,6 +92,8 @@ class ComFilesModelAttachments extends KModelDatabase
 
     protected function _buildQueryJoins(KDatabaseQueryInterface $query)
     {
+        $state = $this->getState();
+
         $table = $this->getFilesModel()->getTable();
 
         // Join files table
@@ -92,6 +101,10 @@ class ComFilesModelAttachments extends KModelDatabase
 
         // Join users table
         $query->join('users AS users', 'tbl.created_by = users.id', 'LEFT');
+
+        if ($state->container) {
+            $query->join('files_containers AS containers', 'files.files_container_id = containers.files_container_id', 'INNER');
+        }
 
         parent::_buildQueryJoins($query);
     }
