@@ -64,7 +64,13 @@ Files.Compact.App = new Class({
 
 				copy.render('compact').inject(that.preview);
 
-				that.preview.getElement('img').set('src', copy.image).show();
+				var img = copy.image;
+
+				if (copy.thumbnail) {
+					img = copy.thumbnail.url;
+				}
+
+				that.preview.getElement('img').set('src', img).show();
 
 				kQuery('.off-canvas-menu-toggle-holder--right').trigger('click')
 			},
