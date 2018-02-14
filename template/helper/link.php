@@ -62,7 +62,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         ));
 
         if ($config->token) {
-            $config->url = $this->_token($config->url, $config->token);
+            $config->url = $this->sign($config->url, $config->token);
         }
 
         $html = $this->getTemplate()->createHelper('behavior')->plyr($config);
@@ -92,7 +92,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         ));
 
         if ($config->token) {
-            $config->url = $this->_token($$config->url, $config->token);
+            $config->url = $this->sign($$config->url, $config->token);
         }
 
         $html = '';
@@ -155,7 +155,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         ));
 
         if ($config->token) {
-            $config->url = $this->_token($config->url, $config->token);
+            $config->url = $this->sign($config->url, $config->token);
         }
 
         $attributes = $this->_prepareAttributes($config->attributes);
@@ -180,7 +180,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         return $result;
     }
 
-    protected function _token($url, $config = array())
+    public function sign($url, $config = array())
     {
         $config = new KObjectConfig(array('name' => 'exp_token'));
 
@@ -192,7 +192,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
             $stringify = true; // Original URL is a string, we should return a string
         }
 
-        $url->setQuery(array($config->name, $this->token($config)));
+        $url->setQuery(array_merge($url->getQuery(true), array($config->name => $this->token($config))));
 
         return $stringify ? $url->toString() : $url;
     }
