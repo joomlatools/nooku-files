@@ -37,6 +37,13 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
 
         $config->append(array('file' => $config->attachment->file->storage));
 
+        return $this->discoverable($config);
+    }
+
+    public function discoverable($config = array())
+    {
+        $config = new KObjectConfig($config);
+
         $file = $config->file;
 
         if ($file->isVideo()) {
