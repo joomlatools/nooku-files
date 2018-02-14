@@ -15,6 +15,22 @@
  */
 class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
 {
+    protected $_filter;
+
+    public function __construct(KObjectConfig $config)
+    {
+        parent::__construct($config);
+
+        $this->_filter = $config->filter;
+    }
+
+    protected function _initialize(KObjectConfig $config)
+    {
+        $config->append(array('filter' => 'com:files.template.filter.url'));
+
+        parent::_initialize($config);
+    }
+
     public function attachment($config = array())
     {
         $config = new KObjectConfig($config);
@@ -218,6 +234,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
     {
         return $this->getTemplate()
                     ->loadFile($layout)
+                    ->addFilter($this->_filter)
                     ->render($config);
     }
 }
