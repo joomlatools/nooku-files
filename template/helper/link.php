@@ -123,10 +123,10 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
         if ($file->isImage())
         {
             $attributes = array();
+            $srcset     = array();
 
             if ($config->thumbnails && ($thumbnails = $file->getThumbnail()))
             {
-                $srcset = array();
 
                 if ($thumbnails->count() > 1)
                 {
