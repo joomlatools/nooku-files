@@ -109,7 +109,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
 
         $config->append(array(
             'layout'     => 'com:files.file.image.html',
-            'thumbnails' => false,
+            'responsive' => false,
             'url'        => sprintf('files://%s/%s', $file->container, $file->path),
             'attributes' => array()
         ));
@@ -125,7 +125,7 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
             $attributes = array();
             $srcset     = array();
 
-            if ($config->thumbnails && ($thumbnails = $file->getThumbnail()))
+            if ($config->responsive && $file->isThumbnailable() && ($thumbnails = $file->getThumbnail()))
             {
 
                 if ($thumbnails->count() > 1)
