@@ -68,7 +68,7 @@ class ComFilesViewJson extends KViewJson
                 $parts = explode('://', $value);
                 $url = sprintf('files://%s/%s', $parts[0], $parts[1]);
                 $this->_getFilter()->filter($url);
-                $array[$key] = $url;
+                $array['url'] = $url;
             }
             elseif (in_array($key, $this->_text_fields)) {
                 $array[$key] = $this->_processText($value);
