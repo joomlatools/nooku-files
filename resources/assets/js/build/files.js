@@ -4681,9 +4681,9 @@ Files.Attachments.App = new Class({
                 var file = row.file.storage;
 
                 if (file.thumbnail) {
-                    that.preview.getElement('img').set('src', file.thumbnail.uri).show();
-                } else if (file.type == 'image' && file.uri) {
-                    that.preview.getElement('img').set('src', file.uri).show();
+                    that.preview.getElement('img').set('src', file.thumbnail.url).show();
+                } else if (file.type == 'image' && file.url) {
+                    that.preview.getElement('img').set('src', file.url).show();
                 }
 
                 that.grid.selected = row.name;
