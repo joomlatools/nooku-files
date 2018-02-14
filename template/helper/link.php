@@ -205,7 +205,9 @@ class ComFilesTemplateHelperLink extends KTemplateHelperAbstract
 
     public function sign($url, $config = array())
     {
-        $config = new KObjectConfig(array('name' => 'exp_token'));
+        $config = new KObjectConfig($config);
+
+        $config->append(array('name' => 'exp_token'));
 
         $stringify = false;
 
