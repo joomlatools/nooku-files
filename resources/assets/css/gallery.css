@@ -62,7 +62,7 @@
 
 .k-ui-namespace .koowa_media--gallery .koowa_media__item__link { display: inline-block; vertical-align: middle; width: 100%; padding: 8px; }
 
-.k-ui-namespace .koowa_media--gallery .koowa_header { margin: 0; padding: 0; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; -webkit-hyphens: none; -ms-hyphens: none; hyphens: none; }
+.k-ui-namespace .koowa_media--gallery .koowa_header { margin: 0; padding: 0; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; -webkit-hyphens: none; -moz-hyphens: none; -ms-hyphens: none; hyphens: none; }
 
 .k-ui-namespace .koowa_media--gallery .koowa_media__item__thumbnail { min-width: 100%; text-align: center; white-space: nowrap; font-size: 0; padding: 0; }
 
