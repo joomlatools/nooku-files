@@ -15,11 +15,10 @@
  */
 class ComFilesViewJson extends KViewJson
 {
-    protected $_filter;
-
     protected function _initialize(KObjectConfig $config)
     {
-        $config->append(array('filter' => 'com:files.template.filter.url'));
+        $config->append(array('behaviors' => array('routable')));
+
         parent::_initialize($config);
     }
 
@@ -40,48 +39,5 @@ class ComFilesViewJson extends KViewJson
         }
 
         return $output;
-    }
-
-    /**
-     * Converts links in an array from relative to absolute
-     *
-     * @param array $array Source array
-     */
-    protected function _processLinks(array &$array)
-    {
-        $base = $this->getUrl()->toString(KHttpUrl::AUTHORITY);
-
-        foreach ($array as $key => &$value)
-        {
-            if (is_array($value)) {
-                $this->_processLinks($value);
-            }
-            elseif ($key === 'href')
-            {
-                if (substr($value, 0, 4) !== 'http') {
-                    $array[$key] = $base.$value;
-                }
-            }
-            elseif ($key === 'uri')
-            {
-                // Expose URL from URI using template filter
-                $parts = explode('://', $value);
-                $url = sprintf('files://%s/%s', $parts[0], $parts[1]);
-                $this->_getFilter()->filter($url);
-                $array['url'] = $url;
-            }
-            elseif (in_array($key, $this->_text_fields)) {
-                $array[$key] = $this->_processText($value);
-            }
-        }
-    }
-
-    protected function _getFilter()
-    {
-        if (!$this->_filter) {
-            $this->_filter = $this->getObject($this->getConfig()->filter);
-        }
-
-        return $this->_filter;
     }
 }
