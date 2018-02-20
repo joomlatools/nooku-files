@@ -55,6 +55,11 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
         if (in_array($query->view, array('attachment', 'attachments')))
         {
             $this->_setAliases();
+            $dispatcher = $context->getSubject();
+
+            if (!$dispatcher->isIncludable()) {
+                $dispatcher->addBehavior('com:files.dispatcher.behavior.includable');
+            }
 
             if (!$query->container) {
                 $query->container = $this->_container;
