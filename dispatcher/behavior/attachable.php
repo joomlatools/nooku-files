@@ -39,6 +39,11 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
         parent::_initialize($config);
     }
 
+    protected function _attachBehaviors(KControllerContextInterface $context)
+    {
+        // For convenience when extending behavior
+    }
+
     /**
      * Before Dispatch command handler.
      *
@@ -55,6 +60,8 @@ class ComFilesDispatcherBehaviorAttachable extends KControllerBehaviorAbstract
         if (in_array($query->view, array('attachment', 'attachments')))
         {
             $this->_setAliases();
+            $this->_attachBehaviors($context);
+
             $dispatcher = $context->getSubject();
 
             if (!$dispatcher->isIncludable()) {
