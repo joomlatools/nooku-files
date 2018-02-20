@@ -113,6 +113,22 @@ defined('KOOWA') or die;
             {
                 context.url += '&id=' + context.attachment.id;
             });
+
+            // Override uploader widget for handling errors
+            if ($.koowa.uploader)
+            {
+                $.widget("koowa.uploader", $.koowa.uploader,
+                {
+                    _handleUploadErrors: function (uploader, file, result) {
+                        result.response = $.parseJSON(result.response);
+
+                        // Avoid reporting attachment duplicates
+                        if (result.response.status === false && result.response.code != 1062) {
+                            this._super(uploader, file, result);
+                        }
+                    }
+                });
+            }
         });
     </script>
 
